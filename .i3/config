@@ -27,7 +27,7 @@ font pango:DejaVu Sans Mono 8
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec /usr/bin/sakura
+bindsym $mod+Return exec /usr/bin/sakura -e tmux
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -87,7 +87,7 @@ bindsym $mod+space focus mode_toggle
 bindsym $mod+a focus parent
 
 # focus the child container
-#bindsym $mod+d focus child
+bindsym $mod+c focus child
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -157,12 +157,36 @@ bindsym XF86MonBrightnessUp exec --no-startup-id sudo /home/yuki/.i3/inc_brightn
 bindsym XF86MonBrightnessDown exec --no-startup-id sudo /home/yuki/.i3/dec_brightness.sh
 
 # Change volume
-bindsym XF86AudioRaiseVolume exec amixer -c 1 sset Master playback 2dB+
-bindsym XF86AudioLowerVolume exec amixer -c 1 sset Master playback 2dB-
-bindsym XF86AudioPlay exec amixer -c 1 sset Headphone toggle
+bindsym XF86AudioRaiseVolume exec --no-startup-id amixer -c 1 sset Master playback 2dB+
+bindsym XF86AudioLowerVolume exec --no-startup-id amixer -c 1 sset Master playback 2dB-
+bindsym XF86AudioPlay exec --no-startup-id amixer -c 1 sset Headphone toggle
+
+# cmus music player controls
+bindsym XF86AudioPause exec --no-startup-id cmus-remote -u
 
 # Lock screen
-bindsym $mod+XF86AudioStop exec i3lock -i /home/yuki/Pictures/5cms.png
+#bindsym $mod+XF86AudioStop exec /home/yuki/playground/rice/lock.sh
+bindsym $mod+XF86AudioStop exec i3lock -i $(ls /home/yuki/playground/rice/*.png | shuf -n 1)
 
+# Record xmacro - (stop with same key)
+bindsym $mod+XF86AudioPrev exec --no-startup-id xmacrorec2 -k 173 -o /home/yuki/.i3/macro.xmacro
+# Play xmacro
+bindsym XF86AudioNext exec --no-startup-id xmacroplay -d 200 < /home/yuki/.i3/macro.xmacro
 
+# quick commands
+mode "(s)sh duplicate" {
+    # Duplicate an ssh connection
+    bindsym s exec --no-startup-id /home/yuki/.i3/ssh-reopen.py
 
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym q mode "default"
+}
+bindsym $mod+z mode "(s)sh duplicate"
+
+# Startup clipster
+exec --no-startup-id clipster -d
+
+# Startup dropbox
+exec --no-startup-id dropbox-cli start
